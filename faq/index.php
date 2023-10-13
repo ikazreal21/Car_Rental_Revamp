@@ -53,7 +53,7 @@ if (isset($_SESSION['login_client'])) {
                                 <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                                     <ul class="dropdown-menu">
                                         <li> <a href="entercar.php">Add Car</a></li>
-                                        <li> <a href="enterdriver.php"> Add Driver</a></li>
+
                                         <li> <a href="clientview.php">View</a></li>
 
                                     </ul>
@@ -81,7 +81,7 @@ if (isset($_SESSION['login_client'])) {
                                 <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
                                     <ul class="dropdown-menu">
                                         <li> <a href="prereturncar.php">Return Now</a></li>
-                                        <li> <a href="mybookings.php"> My Bookings</a></li>
+                                        <li> <a href="mybookings.php"> Booking History</a></li>
                                     </ul>
                                 </li>
                             </ul>

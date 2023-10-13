@@ -43,8 +43,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -125,10 +128,7 @@ function GetImageExtension($imagetype)
 
 $car_name = $conn->real_escape_string($_POST['car_name']);
 $car_nameplate = $conn->real_escape_string($_POST['car_nameplate']);
-$ac_price = $conn->real_escape_string($_POST['ac_price']);
-$non_ac_price = $conn->real_escape_string($_POST['non_ac_price']);
-$ac_price_per_day = $conn->real_escape_string($_POST['ac_price_per_day']);
-$non_ac_price_per_day = $conn->real_escape_string($_POST['non_ac_price_per_day']);
+$car_fare = $conn->real_escape_string($_POST['car_fare']);
 $car_availability = "yes";
 
 //$query = "INSERT into cars(car_name,car_nameplate,ac_price,non_ac_price,car_availability) VALUES('" . $car_name . "','" . $car_nameplate . "','" . $ac_price . "','" . $non_ac_price . "','" . $car_availability ."')";
@@ -147,7 +147,7 @@ if (!empty($_FILES["uploadedimage"]["name"])) {
         //  $query0 = "UPDATE cars SET car_img = '$target_path' WHERE ";
         //$success0 = $conn->query($query0);
 
-        $query = "INSERT into cars(car_name,car_nameplate,car_img,ac_price,non_ac_price,ac_price_per_day,non_ac_price_per_day,car_availability) VALUES('" . $car_name . "','" . $car_nameplate . "','" . $target_path . "','" . $ac_price . "','" . $non_ac_price . "','" . $ac_price_per_day . "','" . $non_ac_price_per_day . "','" . $car_availability . "')";
+        $query = "INSERT into cars(car_name,car_nameplate,car_img,car_fare,car_availability) VALUES('" . $car_name . "','" . $car_nameplate . "','" . $target_path . "','" . $car_fare . "','" . $car_availability . "')";
         $success = $conn->query($query);
 
     }
@@ -162,7 +162,7 @@ $result = mysqli_query($conn, $query1);
 $rs = mysqli_fetch_array($result, MYSQLI_BOTH);
 $car_id = $rs['car_id'];
 
-$query2 = "INSERT into clientcars(car_id,client_username) values('" . $car_id . "','" . $_SESSION['login_client'] . "')";
+$query2 = "INSERT into clientcars(car_id,client_username) values('" . $car_id . "','admin')";
 $success2 = $conn->query($query2);
 
 if (!$success) {?>

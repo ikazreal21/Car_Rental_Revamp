@@ -65,8 +65,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -84,19 +87,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>

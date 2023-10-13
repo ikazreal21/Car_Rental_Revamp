@@ -45,8 +45,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -64,19 +67,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -112,16 +111,19 @@ if (isset($_SESSION['login_client'])) {
 
 <?php $login_client = $_SESSION['login_client'];
 
-$sql1 = "SELECT * FROM rentedcars rc, clientcars cc, customers c, cars WHERE cc.client_username = '$login_client' AND cc.car_id = rc.car_id AND rc.return_status = 'R' AND c.customer_username = rc.customer_username AND cc.car_id = cars.car_id";
+$sql1 = "SELECT * FROM rentedcars rc, cars WHERE cars.car_id = rc.car_id AND rc.return_status = 'R' order by id desc";
 
 $result1 = $conn->query($sql1);
+
+// echo '<pre>';
+// var_dump(mysqli_fetch_assoc($result1));
+// echo '<pre>';
 
 if (mysqli_num_rows($result1) > 0) {
     ?>
 <div class="container">
       <div class="jumbotron">
         <h1 class="text-center">Your Bookings</h1>
-        <p class="text-center"> Hope you enjoyed our service </p>
       </div>
     </div>
 
@@ -133,8 +135,8 @@ if (mysqli_num_rows($result1) > 0) {
 <th width="15%">Customer Name</th>
 <th width="20%">Rent Start Date</th>
 <th width="20%">Rent End Date</th>
-<th width="10%">Distance</th>
 <th width="15%">Total Amount</th>
+<th width="15%">Actions</th>
 </tr>
 </thead>
 <?php
@@ -142,11 +144,13 @@ while ($row = mysqli_fetch_assoc($result1)) {
         ?>
 <tr>
 <td><?php echo $row["car_name"]; ?></td>
-<td><?php echo $row["customer_name"]; ?></td>
-<td><?php echo $row["rent_start_date"] ?></td>
-<td><?php echo $row["rent_end_date"]; ?></td>
-<td><?php echo $row["distance"]; ?></td>
-<td>Rs. <?php echo $row["total_amount"]; ?></td>
+<td><?php echo $row["customer_username"]; ?></td>
+<td><?php echo date('M d, Y', strtotime($row["rent_start_date"])); ?></td>
+<td><?php echo date('M d, Y', strtotime($row["rent_end_date"])); ?></td>
+<td><?php echo '₱' . number_format($row["total_amount"], 2); ?></td>
+<td>
+    <a href="view_pictures.php?src=<?php echo $row["reciept_image"]; ?>"> View Reciept </a>
+</td>
 </tr>
 <?php }?>
                 </table>

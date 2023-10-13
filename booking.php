@@ -39,7 +39,7 @@ if (!isset($_SESSION['login_customer'])) {
             <?php
 if (isset($_SESSION['login_client'])) {
     ?>
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                       <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="index.php">Home</a>
@@ -52,8 +52,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -71,19 +74,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -120,7 +119,7 @@ if (isset($_SESSION['login_client'])) {
 <div class="container" style="margin-top: 65px;" >
     <div class="col-md-7" style="float: none; margin: 0 auto;">
       <div class="form-area">
-        <form role="form" action="bookingconfirm.php" method="POST">
+        <form role="form" action="bookingconfirm.php" enctype="multipart/form-data" method="POST">
         <br style="clear: both">
           <br>
 
@@ -133,30 +132,36 @@ if (mysqli_num_rows($result1)) {
     while ($row1 = mysqli_fetch_assoc($result1)) {
         $car_name = $row1["car_name"];
         $car_nameplate = $row1["car_nameplate"];
-        $ac_price = $row1["ac_price"];
-        $non_ac_price = $row1["non_ac_price"];
-        $ac_price_per_day = $row1["ac_price_per_day"];
-        $non_ac_price_per_day = $row1["non_ac_price_per_day"];
+        $ac_price = $row1["car_fare"];
     }
 }
 
 ?>
-
+           <h3>Gcash Number of Axl Rentals: 09392452175</h3>
           <!-- <div class="form-group"> -->
               <h5> Selected Car:&nbsp;  <b><?php echo ($car_name); ?></b></h5>
          <!-- </div> -->
 
           <!-- <div class="form-group"> -->
             <h5> Number Plate:&nbsp;<b> <?php echo ($car_nameplate); ?></b></h5>
+            <h5> Fare per Day:&nbsp;<b> <?php echo '₱' . number_format($ac_price, 2); ?></b></h5>
           <!-- </div>      -->
         <!-- <div class="form-group"> -->
         <?php $today = date("Y-m-d")?>
           <label><h5>Start Date:</h5></label>
             <input type="date" name="rent_start_date" min="<?php echo ($today); ?>" required="">
-            &nbsp;
+            <br>
           <label><h5>End Date:</h5></label>
           <input type="date" name="rent_end_date" min="<?php echo ($today); ?>" required="">
         <!-- </div>      -->
+        <br>
+        <br>
+        <hr>
+        <label><h5>Gcash Reference Number:</h5></label>
+        <input type="number" name="reference_number" min="0" required="">
+
+        <label><h5>Gcash Reciept Image:</h5></label>
+        <input class="form-control" id="uploadedimage" type="file" name="uploadedimage" placeholder="Receipt" required>
 
             <br><br>
 
@@ -168,7 +173,7 @@ if (mysqli_num_rows($result1)) {
 
       </div>
       <div class="col-md-12" style="float: none; margin: 0 auto; text-align: center;">
-            <h6><strong>Note:</strong> You will be charged with extra <span class="text-danger">Fee</span> for each day after the due date ends.</h6>
+            <h6><strong>Note:</strong> You will be charged with extra <span class="text-danger">₱500</span> for each day after the due date ends.</h6>
         </div>
     </div>
 

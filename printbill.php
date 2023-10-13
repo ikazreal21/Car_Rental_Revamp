@@ -46,8 +46,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -65,19 +68,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -144,7 +143,7 @@ function dateDiff($start, $end)
 }
 
 $extra_days = dateDiff("$rent_end_date", "$car_return_date");
-$total_fine = $extra_days * 200;
+$total_fine = $extra_days * 500;
 
 $duration = dateDiff("$rent_start_date", "$rent_end_date");
 
@@ -152,19 +151,15 @@ if ($extra_days > 0) {
     $total_amount = $total_amount + $total_fine;
 }
 
-if ($charge_type == "days") {
+if ($charge_type == "day") {
     $no_of_days = $distance_or_days;
     $sql1 = "UPDATE rentedcars SET car_return_date='$car_return_date', no_of_days='$no_of_days', total_amount='$total_amount', return_status='$return_status' WHERE id = '$id' ";
-} else {
-    $distance = $distance_or_days;
-    $sql1 = "UPDATE rentedcars SET car_return_date='$car_return_date', distance='$distance', no_of_days='$duration', total_amount='$total_amount', return_status='$return_status' WHERE id = '$id' ";
 }
 
 $result1 = $conn->query($sql1);
 
 if ($result1) {
-    $sql2 = "UPDATE cars c, driver d, rentedcars rc SET c.car_availability='yes', d.driver_availability='yes'
-     WHERE rc.car_id=c.car_id AND rc.driver_id=d.driver_id AND rc.customer_username = '$login_customer' AND rc.id = '$id'";
+    $sql2 = "UPDATE cars c, rentedcars rc SET c.car_availability='yes' WHERE rc.car_id=c.car_id";
     $result2 = $conn->query($sql2);
 } else {
     echo $conn->error;
@@ -199,41 +194,31 @@ if ($result1) {
                 <br>
                 <h4> <strong>Vehicle Number:</strong> <?php echo $car_nameplate; ?></h4>
                 <br>
-                <h4> <strong>Fare:&nbsp;</strong>  Rs. <?php
-if ($charge_type == "days") {
-    echo ($fare . "/day");
-} else {
-    echo ($fare . "/km");
-}
-?></h4>
+                <h4> <strong>Fare:&nbsp;</strong><?php echo ('₱' . number_format($fare, 2) . "/day"); ?></h4>
                 <br>
                 <h4> <strong>Booking Date: </strong> <?php echo date("Y-m-d"); ?> </h4>
                 <br>
-                <h4> <strong>Start Date: </strong> <?php echo $rent_start_date; ?></h4>
+                <h4> <strong>Start Date: </strong> <?php echo date('M d, Y', strtotime($rent_start_date)); ?></h4>
                 <br>
-                <h4> <strong>Rent End Date: </strong> <?php echo $rent_end_date; ?></h4>
+                <h4> <strong>Rent End Date: </strong> <?php echo date('M d, Y', strtotime($rent_end_date)); ?></h4>
                 <br>
-                <h4> <strong>Car Return Date: </strong> <?php echo $car_return_date; ?> </h4>
+                <h4> <strong>Car Return Date: </strong> <?php echo date('M d, Y', strtotime($car_return_date)); ?> </h4>
                 <br>
-                <?php if ($charge_type == "days") {?>
-                    <h4> <strong>Number of days:</strong> <?php echo $distance_or_days; ?>day(s)</h4>
-                <?php } else {?>
-                    <h4> <strong>Distance Travelled:</strong> <?php echo $distance_or_days; ?>km(s)</h4>
-                <?php }?>
+                <h4> <strong>Number of days: </strong> <?php echo $distance_or_days; ?> day(s)</h4>
                 <br>
                 <?php
-if ($extra_days > 0) {
+                if ($extra_days > 0) {
 
-    ?>
-                <h4> <strong>Total Fine:</strong> <label class="text-danger"> Rs. <?php echo $total_fine; ?>/- </label> for <?php echo $extra_days; ?> extra days.</h4>
+                    ?>
+                <h4> <strong>Total Fine:</strong> <label class="text-danger"><?php echo '₱' . number_format($total_fine, 2); ?>/- </label> for <?php echo $extra_days; ?> extra days.</h4>
                 <br>
                 <?php }?>
-                <h4> <strong>Total Amount: </strong> Rs. <?php echo $total_amount; ?>/-     </h4>
+                <h4> <strong>Total Amount: </strong><?php echo '₱' . number_format($total_amount, 2); ?></h4>
                 <br>
             </div>
         </div>
         <div class="col-md-12" style="float: none; margin: 0 auto; text-align: center;">
-            <h6>Warning! <strong>Do not reload this page</strong> or the above display will be lost. If you want a hardcopy of this page, please print it now.</h6>
+            <h6>Warning! <strong>Do not reload this page</strong> or the above display will be lost. If you want a hardcopy of this page, please screenshot it now.</h6>
         </div>
     </div>
 

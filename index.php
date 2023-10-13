@@ -53,8 +53,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -69,22 +72,18 @@ if (isset($_SESSION['login_client'])) {
             <?php
 } else if (isset($_SESSION['login_customer'])) {
     ?>
-            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -142,11 +141,8 @@ if (mysqli_num_rows($result1) > 0) {
     while ($row1 = mysqli_fetch_assoc($result1)) {
         $car_id = $row1["car_id"];
         $car_name = $row1["car_name"];
-        $ac_price = $row1["ac_price"];
-        $ac_price_per_day = $row1["ac_price_per_day"];
-        $non_ac_price = $row1["non_ac_price"];
-        $non_ac_price_per_day = $row1["non_ac_price_per_day"];
         $car_img = $row1["car_img"];
+        $fare = $row1["car_fare"];
 
         ?>
             <a href="booking.php?id=<?php echo ($car_id) ?>">
@@ -155,8 +151,7 @@ if (mysqli_num_rows($result1) > 0) {
 
             <img class="card-img-top" src="<?php echo $car_img; ?>" alt="Card image cap">
             <h5><b> <?php echo $car_name; ?> </b></h5>
-            <h6> AC Fare: <?php echo ("Rs. " . $ac_price . "/km & Rs." . $ac_price_per_day . "/day"); ?></h6>
-            <h6> Non-AC Fare: <?php echo ("Rs. " . $non_ac_price . "/km & Rs." . $non_ac_price_per_day . "/day"); ?></h6>
+            <h6><?php echo '₱' . number_format($fare, 2); ?> per day</h6>
 
 
             </div>

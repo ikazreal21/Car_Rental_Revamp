@@ -1,7 +1,7 @@
 <?php
-session_start();
-require 'connection.php';
-$conn = Connect();
+include 'session_customer.php';
+
+$price = $_GET["price"] ?? '';
 
 $sql1 = "SELECT * FROM cars WHERE car_availability='yes'";
 $result1 = mysqli_query($conn, $sql1);
@@ -45,14 +45,10 @@ $result1 = mysqli_query($conn, $sql1);
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="prereturncar.php">Return My Car</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -66,52 +62,74 @@ $result1 = mysqli_query($conn, $sql1);
     <div id="sec2" style="color: #777;background-color:white;text-align:center;padding:50px 80px;text-align: justify;">
 
         <h3 style="text-align:center;">Available Cars</h3>
-        <form action="" method="post">
+        <form action="" method="get">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control">
-                    <option selected>Car Brand</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                <select name="price" class="form-control">
+                    <option value="" selected>Rent Price</option>
+                    <option value="<">Less than ₱1,000</option>
+                    <option value=">">Greater than ₱1,000</option>
                 </select>
             </div>
             <div class="form-group col-md-3">
-                <button type="submit"name="submit" value="Rent Now" class="btn">Search</button>
+                <button type="submit" value="" class="btn">Search</button>
             </div>
         </div>
 
         </form>
     <br>
         <section class="menu-content">
-            <?php
-$sql1 = "SELECT * FROM cars WHERE car_availability='yes'";
-$result1 = mysqli_query($conn, $sql1);
+        <?php
 
-if (mysqli_num_rows($result1) > 0) {
-    while ($row1 = mysqli_fetch_assoc($result1)) {
-        $car_id = $row1["car_id"];
-        $car_name = $row1["car_name"];
-        $car_img = $row1["car_img"];
+        if($status_customer == 'approve') {
+            if ($price == "<") {
+                $sql1 = "SELECT * FROM cars WHERE car_availability='yes' and car_fare <= 1000";
+            } else if ($price == ">") {
+                $sql1 = "SELECT * FROM cars WHERE car_availability='yes' and car_fare > 1000";
+            } else {
+                $sql1 = "SELECT * FROM cars WHERE car_availability='yes'";
+            }
 
+            $result1 = mysqli_query($conn, $sql1);
+
+            // echo '<pre>';
+            // var_dump($sql1);
+            // echo '<pre>';
+
+            // echo '<pre>';
+            // var_dump($result1);
+            // echo '<pre>';
+
+            if (mysqli_num_rows($result1) > 0) {
+                while ($row1 = mysqli_fetch_assoc($result1)) {
+                    $car_id = $row1["car_id"];
+                    $car_name = $row1["car_name"];
+                    $car_img = $row1["car_img"];
+                    $fare = $row1["car_fare"];
+
+                    ?>
+                        <a href="booking.php?id=<?php echo ($car_id) ?>">
+                        <div class="sub-menu">
+
+
+                        <img class="card-img-top" src="<?php echo $car_img; ?>" alt="Card image cap">
+                        <h5><b> <?php echo $car_name; ?> </b></h5>
+                        <h6><?php echo '₱' . number_format($fare, 2); ?> per day</h6>
+
+
+                        </div>
+                        </a>
+                        <?php }} else {
+            ?>
+            <h1> No cars available :( </h1>
+                            <?php
+            }
+        } else if ($status_customer == 'decline') {
+            echo "<h1> Your Account Has Been Decline Contact Admin for More Details axl@gmail.com </h1>";
+        } else {
+            echo "<h1> Your Account is Under Review </h1>";
+        }
         ?>
-            <a href="booking.php?id=<?php echo ($car_id) ?>">
-            <div class="sub-menu">
-
-
-            <img class="card-img-top" src="<?php echo $car_img; ?>" alt="Card image cap">
-            <h5><b> <?php echo $car_name; ?> </b></h5>
-            <h6> Rent Fee per Day: P1000</h6>
-
-
-            </div>
-            </a>
-            <?php }} else {
-    ?>
-<h1> No cars available :( </h1>
-                <?php
-}
-?>
         </section>
 
     </div>

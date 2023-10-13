@@ -45,8 +45,11 @@ if (isset($_SESSION['login_client'])) {
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Control Panel <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="entercar.php">Add Car</a></li>
-              <li> <a href="enterdriver.php"> Add Driver</a></li>
-              <li> <a href="clientview.php">View</a></li>
+
+              <li> <a href="clientview.php">History</a></li>
+              <li> <a href="pending_bookings_admin.php">Pending Bookings</a></li>
+              <li> <a href="pending_users.php">Pending Users</a></li>
+              <li> <a href="all_users.php">Users</a></li>
 
             </ul>
             </li>
@@ -64,19 +67,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <ul class="nav navbar-nav">
-            <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Garagge <span class="caret"></span> </a>
-                <ul class="dropdown-menu">
-              <li> <a href="returncar.php">Return Now</a></li>
-              <li> <a href="mybookings.php"> My Bookings</a></li>
-            </ul>
-            </li>
-          </ul>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -118,16 +117,14 @@ function dateDiff($start, $end)
     return round($diff / 86400);
 }
 $id = $_GET["id"];
-$sql1 = "SELECT c.car_name, c.car_nameplate, rc.rent_start_date, rc.rent_end_date, rc.fare, rc.charge_type, d.driver_name, d.driver_phone
- FROM rentedcars rc, cars c, driver d
- WHERE id = '$id' AND c.car_id=rc.car_id AND d.driver_id = rc.driver_id";
+$sql1 = "SELECT c.car_name, c.car_nameplate, rc.rent_start_date, rc.rent_end_date, rc.fare, rc.charge_type
+ FROM rentedcars rc, cars c
+ WHERE id = '$id' AND c.car_id=rc.car_id";
 $result1 = $conn->query($sql1);
 if (mysqli_num_rows($result1) > 0) {
     while ($row = mysqli_fetch_assoc($result1)) {
         $car_name = $row["car_name"];
         $car_nameplate = $row["car_nameplate"];
-        $driver_name = $row["driver_name"];
-        $driver_phone = $row["driver_phone"];
         $rent_start_date = $row["rent_start_date"];
         $rent_end_date = $row["rent_end_date"];
         $fare = $row["fare"];
@@ -148,31 +145,21 @@ if (mysqli_num_rows($result1) > 0) {
 
            <h5> Vehicle Number:&nbsp;  <?php echo ($car_nameplate); ?></h5>
 
-           <h5> Rent date:&nbsp;  <?php echo ($rent_start_date); ?></h5>
+           <h5> Rent date:&nbsp;  <?php echo date('M d, Y', strtotime($rent_start_date)); ?></h5>
 
-           <h5> End Date:&nbsp;  <?php echo ($rent_end_date); ?></h5>
+           <h5> End Date:&nbsp;  <?php echo date('M d, Y', strtotime($rent_end_date)); ?></h5>
 
-           <h5> Fare:&nbsp;  Rs. <?php
-if ($charge_type == "days") {
-    echo ($fare . "/day");
+           <h5> Fare:&nbsp;<?php
+if ($charge_type == "day") {
+    echo ('₱' . number_format($fare, 2) . "/day");
 } else {
-    echo ($fare . "/km");
+    echo ('₱' . number_format($fare, 2) . "/day");
 }
 ?>
             </h5>
-
-           <h5> Driver Name:&nbsp;  <?php echo ($driver_name); ?></h5>
-
-           <h5> Driver Contact:&nbsp;  <?php echo ($driver_phone); ?></h5>
-          <?php if ($charge_type == "km") {?>
-          <div class="form-group">
-            <input type="text" class="form-control" id="distance_or_days" name="distance_or_days" placeholder="Enter the distance travelled (in km)" required="" autofocus>
-          </div>
-          <?php } else {?>
             <h5> Number of Day(s):&nbsp;  <?php echo ($no_of_days); ?></h5>
             <input type="hidden" name="distance_or_days" value="<?php echo $no_of_days; ?>">
-          <?php }?>
-          <input type="hidden" name="hid_fare" value="<?php echo $fare; ?>">
+            <input type="hidden" name="hid_fare" value="<?php echo $fare; ?>">
 
            <input type="submit" name="submit" value="submit" class="btn btn-success pull-right">
         </form>

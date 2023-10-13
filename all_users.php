@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
-
 <?php
-include 'session_client.php';?>
+session_start();
+require 'connection.php';
+$conn = Connect();
+?>
 <head>
 <link rel="shortcut icon" type="image/png" href="assets/img/P.png.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/customerlogin.css">
-    <link rel="stylesheet" href="assets/w3css/w3.css">
-  <script type="text/javascript" src="assets/js/jquery.min.js"></script>
-  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/clientpage.css" />
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+<link rel="stylesheet" href="assets/w3css/w3.css">
+<link rel="stylesheet" type="text/css" href="assets/css/customerlogin.css">
+<script type="text/javascript" src="assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="assets/css/clientpage.css" />
 </head>
-<body>
-
-      <!-- Navigation -->
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+<!-- Navigation -->
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation" style="color: black">
         <div class="container">
             <div class="navbar-header">
@@ -66,14 +67,15 @@ if (isset($_SESSION['login_client'])) {
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="index.php">Home</a>
+                        <a href="customer_index.php">Home</a>
                     </li>
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_customer']; ?></a>
                     </li>
-                    <li>
-                        <a href="#">History</a>
-                    </li>
+                    <li> <a href="pending_bookings.php"> Pending Bookings</a></li>
+                    <li> <a href="mybookings.php"> Booking History</a></li>
+
+                    <li> <a href="prereturncar.php">Return My Car</a></li>
                     <li>
                         <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
@@ -107,86 +109,68 @@ if (isset($_SESSION['login_client'])) {
         <!-- /.container -->
     </nav>
 
-    <div class="container" style="margin-top: 65px;" >
-    <div class="col-md-7" style="float: none; margin: 0 auto;">
-      <div class="form-area">
-        <form role="form" action="entercar1.php" enctype="multipart/form-data" method="POST">
-        <br style="clear: both">
-          <h3 style="margin-bottom: 25px; text-align: center; font-size: 30px;"> Provide Car Details. </h3>
+    <?php $login_client = $_SESSION['login_client'];
 
-          <div class="form-group">
-            <input type="text" class="form-control" id="car_name" name="car_name" placeholder="Car Name " required autofocus="">
-          </div>
+$sql1 = "SELECT * FROM customers WHERE status = 'approve'";
 
-          <div class="form-group">
-            <input type="text" class="form-control" id="car_nameplate" name="car_nameplate" placeholder="Vehicle Number Plate" required>
-          </div>
+$result1 = $conn->query($sql1);
 
-          <div class="form-group">
-            <input type="text" class="form-control" id="car_fare" name="car_fare" placeholder="Fare per Day" required>
-          </div>
+// echo '<pre>';
+// var_dump(mysqli_fetch_assoc($result1));
+// echo '<pre>';
 
-          <div class="form-group">
-            <input name="uploadedimage" type="file">
-          </div>
-           <button type="submit" id="submit" name="submit" class="btn btn-success pull-right"> Submit for Rental</button>
-        </form>
+if (mysqli_num_rows($result1) > 0) {
+    ?>
+<div class="container">
+      <div class="jumbotron">
+        <h1 class="text-center">Users</h1>
       </div>
     </div>
 
-
-        <div class="col-md-12" style="float: none; margin: 0 auto;">
-    <div class="form-area" style="padding: 0px 100px 100px 100px;">
-        <form action="" method="POST">
-        <br style="clear: both">
-          <h3 style="margin-bottom: 25px; text-align: center; font-size: 30px;"> My Cars </h3>
+    <div class="table-responsive" style="padding-left: 100px; padding-right: 100px;" >
+<table class="table table-striped">
+  <thead class="thead-dark">
+<tr>
+<th width="20%">Customer Username</th>
+<th width="15%">Customer Name</th>
+<th width="15%">Customer Phone</th>
+<th width="15%">Customer Email</th>
+<th width="15%">Customer Address</th>
+<th width="15%">Customer ID </th>
+<!-- <th width="15%">Actions</th> -->
+</tr>
+</thead>
 <?php
-// Storing Session
-$user_check = $_SESSION['login_client'];
-$sql = "SELECT * FROM cars";
-$result = mysqli_query($conn, $sql);
-
-if (mysqli_num_rows($result) > 0) {
-    ?>
-<div style="overflow-x:auto;">
-  <table class="table table-striped">
-    <thead class="thead-dark">
-      <tr>
-        <th width="24%"> Name</th>
-        <th width="15%"> Nameplate </th>
-        <th width="15%"> Fare per Day </th>
-        <th width="1%"> Availability </th>
-        <th width="1%"> Action </th>
-      </tr>
-    </thead>
-
-    <?PHP
-//OUTPUT DATA OF EACH ROW
-    while ($row = mysqli_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result1)) {
         ?>
-
-  <tbody>
-    <tr>
-      <td><?php echo $row["car_name"]; ?></td>
-      <td><?php echo $row["car_nameplate"]; ?></td>
-      <td><?php echo '₱' . number_format($row["car_fare"], 2); ?></td>
-      <td><?php echo $row["car_availability"]; ?></td>
-      <td>
-        <a href="update.php?id=<?php echo $row["car_id"]; ?>">Update</a>
-      </td>
-    </tr>
-  </tbody>
-  <?php }?>
-  </table>
-  </div>
-    <br>
-  <?php } else {?>
-  <h4><center>0 Cars available</center> </h4>
-  <?php }?>
-        </form>
-</div>
-        </div>
+<tr>
+<td><?php echo $row["customer_username"]; ?></td>
+<td><?php echo $row["customer_name"]; ?></td>
+<td><?php echo $row["customer_phone"] ?></td>
+<td><?php echo $row["customer_email"] ?></td>
+<td><?php echo $row["customer_address"] ?></td>
+<td>
+    <a href="view_pictures.php?src=<?php echo $row["id_image"]; ?>"> View ID </a></td>
+    <!-- <td>
+        <a href="approve_user.php?id=<?php echo $row["customer_username"]; ?>"> Approve </a>
+        <a href="decline_user.php?id=<?php echo $row["customer_username"]; ?>"> Decline </a>
+    </td> -->
+</tr>
+<?php }?>
+                </table>
+                </div>
+        <?php } else {
+    ?>
+        <div class="container">
+      <div class="jumbotron">
+        <h1>No Users</h1>
+        <p><?php echo $conn->error; ?> </p>
+      </div>
     </div>
+
+            <?php
+}?>
+
 </body>
 <footer class="site-footer">
         <div class="container">
