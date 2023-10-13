@@ -156,14 +156,14 @@ if (!empty($_FILES["uploadedimage"]["name"])) {
 
 // Taking car_id from cars
 
-$query1 = "SELECT car_id from cars where car_nameplate = '$car_nameplate'";
+// $query1 = "SELECT car_id from cars where car_nameplate = '$car_nameplate'";
 
-$result = mysqli_query($conn, $query1);
-$rs = mysqli_fetch_array($result, MYSQLI_BOTH);
-$car_id = $rs['car_id'];
+// $result = mysqli_query($conn, $query1);
+// $rs = mysqli_fetch_array($result, MYSQLI_BOTH);
+// $car_id = $rs['car_id'];
 
-$query2 = "INSERT into clientcars(car_id,client_username) values('" . $car_id . "','admin')";
-$success2 = $conn->query($query2);
+// $query2 = "INSERT into clientcars(car_id,client_username) values('" . $car_id . "','admin')";
+// $success2 = $conn->query($query2);
 
 if (!$success) {?>
     <div class="container">
