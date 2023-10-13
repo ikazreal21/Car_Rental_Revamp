@@ -164,7 +164,7 @@ if (!empty($_FILES["uploadedimage"]["name"])) {
 
     if (move_uploaded_file($temp_name, $target_path)) {
 
-        $query = "INSERT into customers(customer_name,customer_username,customer_email,customer_phone,customer_address,customer_password,status,id_image) VALUES('" . $customer_name . "','" . $customer_username . "','" . $customer_email . "','" . $customer_phone . "','" . $customer_address . "','" . $customer_password . "','" . $status . "','" . $target_path . "','" . $role . "')";
+        $query = "INSERT into customers(customer_name,customer_username,customer_email,customer_phone,customer_address,customer_password,status,id_image,role) VALUES('" . $customer_name . "','" . $customer_username . "','" . $customer_email . "','" . $customer_phone . "','" . $customer_address . "','" . $customer_password . "','" . $status . "','" . $target_path . "','" . $role . "')";
         $success = $conn->query($query);
     }
 }
