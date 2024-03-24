@@ -109,6 +109,19 @@ if (isset($_SESSION['login_client'])) {
 <?php
 
 require 'connection.php';
+require_once 'vendor/autoload.php';
+
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
+
+Configuration::instance([
+    'cloud' => [
+      'cloud_name' => 'dmagk9gck', 
+      'api_key' => '964986345641993', 
+      'api_secret' => 'sDSJ1IXtdVjMrMAkGxABuvS2wmo'],
+    'url' => [
+      'secure' => true]]);
+
 $conn = Connect();
 
 function GetImageExtension($imagetype)
@@ -135,19 +148,22 @@ $car_availability = "yes";
 //$success = $conn->query($query);
 
 if (!empty($_FILES["uploadedimage"]["name"])) {
-    $file_name = $_FILES["uploadedimage"]["name"];
-    $temp_name = $_FILES["uploadedimage"]["tmp_name"];
-    $imgtype = $_FILES["uploadedimage"]["type"];
-    $ext = GetImageExtension($imgtype);
-    $imagename = $_FILES["uploadedimage"]["name"];
-    $target_path = "assets/img/cars/" . $imagename;
+    // $file_name = $_FILES["uploadedimage"]["name"];
+    // $temp_name = $_FILES["uploadedimage"]["tmp_name"];
+    // $imgtype = $_FILES["uploadedimage"]["type"];
+    // $ext = GetImageExtension($imgtype);
+    // $imagename = $_FILES["uploadedimage"]["name"];
+    // $target_path = "assets/img/cars/" . $imagename;
+    $picture = (new UploadApi())->upload($_FILES["uploadedimage"]["tmp_name"]);
 
-    if (move_uploaded_file($temp_name, $target_path)) {
+    // var_dump($picture);
+    
+    if ($picture) {
         //$query0="INSERT into cars (car_img) VALUES ('".$target_path."')";
         //  $query0 = "UPDATE cars SET car_img = '$target_path' WHERE ";
         //$success0 = $conn->query($query0);
 
-        $query = "INSERT into cars(car_name,car_nameplate,car_img,car_fare,car_availability) VALUES('" . $car_name . "','" . $car_nameplate . "','" . $target_path . "','" . $car_fare . "','" . $car_availability . "')";
+        $query = "INSERT into cars(car_name,car_nameplate,car_img,car_fare,car_availability) VALUES('" . $car_name . "','" . $car_nameplate . "','" . $picture['secure_url'] . "','" . $car_fare . "','" . $car_availability . "')";
         $success = $conn->query($query);
 
     }

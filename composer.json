@@ -1,4 +1,6 @@
 {
     "name": "admin/car_rental-php",
-    "require": {}
+    "require": {
+        "cloudinary/cloudinary_php": "^2"
+    }
 }

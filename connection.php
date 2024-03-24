@@ -2,10 +2,12 @@
 
 function Connect()
 {
-	$dbhost = "us-cdbr-east-06.cleardb.net";
-	$dbuser = "be2d290de4e5b0";
-	$dbpass = "5a51f367";
-	$dbname = "heroku_2e0d3617f5a68cb";
+
+	mysql://hzbyv7u9q3082etp:z1i8hda7orq3sle4@gx97kbnhgjzh3efb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uk5557i9dwvpdaok
+	$dbhost = "gx97kbnhgjzh3efb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
+	$dbuser = "hzbyv7u9q3082etp";
+	$dbpass = "z1i8hda7orq3sle4";
+	$dbname = "uk5557i9dwvpdaok";
 
 	//Create Connection
 	$conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname) or die($conn->connect_error);
