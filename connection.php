@@ -2,6 +2,7 @@
 
 function Connect()
 {
+	date_default_timezone_set('Asia/Manila');
 
 	mysql://hzbyv7u9q3082etp:z1i8hda7orq3sle4@gx97kbnhgjzh3efb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uk5557i9dwvpdaok
 	$dbhost = "gx97kbnhgjzh3efb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com";
