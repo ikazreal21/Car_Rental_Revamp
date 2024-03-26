@@ -1,7 +1,7 @@
 {
     "name": "AXL Renta",
     "short_name": "AXL",
-    "start_url": "index.html",
+    "start_url": "index.php",
     "scope": "./",
     "icons": [
         {
@@ -17,5 +17,5 @@
     ],
     "theme_color": "#ffffff",
     "background_color": "#333",
-    "display": "browser"
+    "display": "standalone"
 }
