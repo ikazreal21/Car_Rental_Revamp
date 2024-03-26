@@ -14,6 +14,7 @@ $result1 = mysqli_query($conn, $sql1);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axl Rentals</title>
     <link rel="shortcut icon" type="image/png" href="assets/img/P.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
@@ -81,6 +82,21 @@ $result1 = mysqli_query($conn, $sql1);
         <section class="menu-content">
         <?php
 
+        $timestamp = date('d-m-Y');
+        $day = date("D",strtotime($timestamp));
+
+        // var_dump($day);
+
+        $sql1 = "SELECT * FROM cars WHERE car_availability='yes'";
+        $result1 = mysqli_query($conn, $sql1);
+        $plate = 0;
+        $car_id = '';
+        $car_name = '';
+        $car_img = '';
+        $fare = '';
+        $coding_cars = array();
+        // var_dump($day);
+
         if($status_customer == 'approve') {
             if ($price == "<") {
                 $sql1 = "SELECT * FROM cars WHERE car_availability='yes' and car_fare <= 1000";
@@ -102,11 +118,30 @@ $result1 = mysqli_query($conn, $sql1);
 
             if (mysqli_num_rows($result1) > 0) {
                 while ($row1 = mysqli_fetch_assoc($result1)) {
-                    $car_id = $row1["car_id"];
-                    $car_name = $row1["car_name"];
-                    $car_img = $row1["car_img"];
-                    $fare = $row1["car_fare"];
 
+                    $plate = (int)substr($row1["car_nameplate"], -1); 
+                    // var_dump($plate);
+                    if ($plate % 2 == 0 && $day == 'Mon' || $plate % 2 == 0 && $day == 'Wed' || $plate % 2 == 0 && $day == 'Fri' || $plate % 2 == 0 && $day == 'Sun') {
+                        // var_dump($row1);
+                        $coding_cars[] = $row1;
+                        $car_id = $row1["car_id"];
+                        $car_name = $row1["car_name"];
+                        $car_img = $row1["car_img"];
+                        $fare = $row1["car_fare"];
+                    } else if ($plate % 2 != 0 && $day == 'Tue' || $plate % 2 != 0 && $day == 'Thu' || $plate % 2 != 0 && $day == 'Sat') {
+                        // var_dump($row1);
+                        $coding_cars[] = $row1;
+                        $car_id = $row1["car_id"];
+                        $car_name = $row1["car_name"];
+                        $car_img = $row1["car_img"];
+                        $fare = $row1["car_fare"];
+                    }
+                }
+                    foreach ($coding_cars as $row1) {
+                        $car_id = $row1["car_id"];
+                        $car_name = $row1["car_name"];
+                        $car_img = $row1["car_img"];
+                        $fare = $row1["car_fare"];
                     ?>
                         <a href="booking.php?id=<?php echo ($car_id) ?>">
                         <div class="sub-menu">
